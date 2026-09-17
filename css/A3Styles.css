@@ -1,0 +1,42 @@
+h1 {
+    color: white;
+    text-align: center;
+    background-image: linear-gradient(to bottom right, #002ac1, #17c8f4);
+    padding: 50px;
+}
+h2 {
+    text-align: center;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 200px;
+  padding: 10px;
+  margin-left: 50px;
+  background-color: bisque;
+  margin-bottom: 50px;
+}
+.container div {
+  background-color: rgb(167, 232, 121);
+  padding: 10px;
+}
+.container div.content {
+  background-color: aqua;
+  padding-top: 200px;
+}
+.container div.logo {
+  background-color: #002ac1;
+}
+
+.buttons {
+    display: flex;
+    gap: 200px;
+    justify-content: center;
+    margin: 50px;
+}
+
+.chartbox {
+  display: flex;
+  background-color: yellow;
+}
