@@ -40,3 +40,66 @@ h2 {
   display: flex;
   background-color: yellow;
 }
+
+.hbar-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.hbar-chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 8px 0 16px 0;
+  font-family: Arial, sans-serif;
+}
+
+.hbar-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hbar-chart-controls select {
+  padding: 4px 8px;
+}
+
+.hbar-country-list {
+  min-width: 220px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid #888;
+}
+
+.hbar-country-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 3px 0;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.hbar-clear-countries {
+  width: fit-content;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.hbar-control-hint {
+  margin: 0;
+  font-size: 12px;
+  max-width: 280px;
+}
+
+.hbar-title,
+.hbar-axis-label {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
