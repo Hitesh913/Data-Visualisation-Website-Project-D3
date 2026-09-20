@@ -20,7 +20,7 @@ function drawHorizontalBarChartPer1000(containerId) {
     container.html("");
 
     container.append("h3")
-        .text("Alternative 2: Caring Personnel per 1,000 Inhabitants");
+        .text("Horizontal bar chart: Caring Personnel per 1,000 Inhabitants");
 
     // Filters
     const controls = container.append("div")
@@ -91,6 +91,11 @@ function drawHorizontalBarChartPer1000(containerId) {
 
         const countries = Array.from(new Set(data.map(function (d) { return d.country; })))
             .sort();
+
+        // One colour per country, using D3 categorical colour schemes taught in the labs
+        var color = d3.scaleOrdinal()
+            .domain(countries)
+            .range(d3.schemeCategory10.concat(d3.schemeSet3).concat(d3.schemePaired));
 
         // Year options
         yearSelect.selectAll("option")
@@ -181,7 +186,9 @@ function drawHorizontalBarChartPer1000(containerId) {
                 .attr("y", function (d) { return y(d.country); })
                 .attr("width", function (d) { return x(d.value); })
                 .attr("height", y.bandwidth())
-                .attr("fill", "#17c8f4")
+                .attr("fill", function (d) {
+                    return color(d.country);
+                })
                 .append("title")
                 .text(function (d) {
                     if (d.missing) {
