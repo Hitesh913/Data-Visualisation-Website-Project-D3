@@ -102,3 +102,102 @@ h2 {
   font-family: Arial, sans-serif;
   font-size: 14px;
 }
+
+/* Vertical bar chart (Persons) - Author: Isuri Ihalagamage*/
+.vbar-charts {
+  width: 100%;
+  min-width: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#chart-persons {
+  position: relative; /* anchor for the tooltip */
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.vbar-chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 24px;
+  margin: 8px 0 16px 0;
+  font-family: Arial, sans-serif;
+}
+
+.vbar-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vbar-chart-controls select {
+  padding: 4px 8px;
+}
+
+.vbar-control-hint {
+  margin: 0;
+  font-size: 12px;
+  max-width: 420px;
+}
+
+.vbar-chart-area {
+  width: 100%;
+}
+
+.vbar-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.vbar-title {
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.vbar-axis-label {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.vbar-x-axis text,
+.vbar-y-axis text {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+
+.vbar-grid line {
+  stroke: #ddd;
+}
+
+.vbar {
+  fill: #1f77b4;
+  cursor: pointer;
+}
+
+.vbar.vbar-active {
+  fill: #17c8f4;
+}
+
+.vbar-tooltip {
+  position: absolute;
+  pointer-events: none;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #888;
+  border-radius: 4px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.vbar-message {
+  font-family: Arial, sans-serif;
+  color: #a00;
+}
