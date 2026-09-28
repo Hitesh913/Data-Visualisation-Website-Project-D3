@@ -2,50 +2,82 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="description" content="Assignment 3 Data Visualisation"/>
-<meta name="keywords" content="HTML, CSS"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Assignment 3 Data Visualisation — Caring Personnel World Data"/>
+<meta name="keywords" content="HTML, CSS, D3, Data Visualisation, OECD"/>
 <meta name="author" content="Truong Nguyen, Hitesh Kumar, Isuri Ihalagamage"/>
-<title>Caring personnel</title>
+<title>Caring Personnel World Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700&display=swap" rel="stylesheet"/>
 <script src="https://d3js.org/d3.v6.min.js"></script>
-<link rel="stylesheet" href="css/A3Styles.css">
-
+<link rel="stylesheet" href="css/A3Styles.css"/>
 </head>
-
-<style></style>
 
 <body>
 
-<h1>Caring Personnel World Data</h1>
+<header class="site-header">
+  <div class="site-header__inner">
+    <p class="site-header__brand">Caring Personnel World Data</p>
+    <p class="site-header__subtitle">OECD Caring Personnel Dataset</p>
+  </div>
+</header>
 
-<div class="container">
-  <div class="content">
-    <h2>Placeholder</h2>
-    <p>paragraph</p>
+<main class="site-main">
+  <section class="intro">
+    <div class="intro__copy">
+      <h2>Explore caring personnel worldwide</h2>
+      <p>
+        Compare practising caring personnel across countries and years using
+        OECD health workforce data, shown through interactive D3.js charts.
+      </p>
     </div>
-  <div class="logo">
-    <image src="healthbackground.jpg" width="900"></image>
+    <div class="intro__visual">
+      <img src="healthbackground.jpg" alt="Healthcare and caring personnel context" width="900"/>
     </div>
-</div>
+  </section>
 
-<h2>Data Visualised</h2>
-<h3>Instructions</h3>
-<p>Placeholder: instructions on how use following functions, sorting, zoom and other features</p>
-<br>
-<div class="buttons">
-<button id="option3" type="button">Grouped bar charts</button>
-<button id="option1" type="button">Vertical bar charts</button>
-<button id="option2" type="button">Horizontal bar charts</button>
-</div>
+  <section class="visualisations">
+    <h2>Data Visualised</h2>
+    <h3>Instructions</h3>
+    <p>Use the buttons below to switch chart views. Each chart supports year selection, sorting, and country comparison through its own controls.</p>
 
-<div class="chartbox">
-    <div id="groupchart"></div>
-</div>
+    <div class="buttons">
+      <button id="option3" type="button">Grouped bar charts</button>
+      <button id="option1" type="button">Vertical bar charts</button>
+      <button id="option2" type="button">Horizontal bar charts</button>
+    </div>
+
+    <div class="chartbox">
+      <p class="chartbox__placeholder">Chart will be shown here upon button selection</p>
+      <div id="groupchart"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__about">
+      <p class="site-footer__label">About this project</p>
+      <p>
+        This is a data visualisation project for COS30045, built with HTML, CSS,
+        JavaScript and D3.js to explore OECD Caring Personnel data across countries and years.
+      </p>
+    </div>
+    <div class="site-footer__authors">
+      <p class="site-footer__label">Authors</p>
+      <ul>
+        <li>Hitesh Kumar</li>
+        <li>Isuri Ihalagamage</li>
+        <li>Truong Nguyen</li>
+      </ul>
+    </div>
+  </div>
+</footer>
 
 <script src="js/horizontalBarChartPer1000.js"></script>
 <script src="js/verticalBarChartPersons.js"></script>
 <script src="js/script.js"></script>
 <script src="js/A3.js"></script>
 </body>
-
-<div class="footer" footer></footer>
 </html>
