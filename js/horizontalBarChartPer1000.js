@@ -92,11 +92,6 @@ function drawHorizontalBarChartPer1000(containerId) {
         const countries = Array.from(new Set(data.map(function (d) { return d.country; })))
             .sort();
 
-        // One colour per country, using D3 categorical colour schemes taught in the labs
-        var color = d3.scaleOrdinal()
-            .domain(countries)
-            .range(d3.schemeCategory10.concat(d3.schemeSet3).concat(d3.schemePaired));
-
         // Year options
         yearSelect.selectAll("option")
             .data(years)
@@ -186,9 +181,7 @@ function drawHorizontalBarChartPer1000(containerId) {
                 .attr("y", function (d) { return y(d.country); })
                 .attr("width", function (d) { return x(d.value); })
                 .attr("height", y.bandwidth())
-                .attr("fill", function (d) {
-                    return color(d.country);
-                })
+                .attr("fill", "#b01513")
                 .append("title")
                 .text(function (d) {
                     if (d.missing) {
