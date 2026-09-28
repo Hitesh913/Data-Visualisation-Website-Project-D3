@@ -28,3 +28,12 @@ d3.select("#option1").on("click", function () {
     drawVerticalBarChartPersons("#chart-persons");
 
 });
+
+
+// Grouped bar charts — coming soon
+d3.select("#option3").on("click", function () {
+
+    d3.select(".chartbox")
+        .html("<p class=\"chartbox__placeholder\">Grouped bar chart is coming soon</p>");
+
+});
