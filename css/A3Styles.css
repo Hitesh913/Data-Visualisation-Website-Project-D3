@@ -399,129 +399,118 @@ h3 {
   font-size: 14px;
 }
 
-/* Vertical bar chart (Persons) - Author: Isuri Ihalagamage*/
+/* Vertical bar chart (Persons) - Author: Isuri Ihalagamage */
+
 .vbar-charts {
-  width: 100%;
-  min-width: 0;
-  padding: 20px;
-  box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 #chart-persons {
-  position: relative;
-  max-width: 900px;
-  margin: 0 auto;
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .vbar-chart-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 24px;
-  margin: 8px 0 16px 0;
-  font-family: var(--font-body);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 24px;
+    margin: 8px 0 16px 0;
+    font-family: Arial, sans-serif;
 }
 
 .vbar-control-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .vbar-chart-controls select {
-  padding: 4px 8px;
+    padding: 4px 8px;
 }
 
 .vbar-control-hint {
-  margin: 0;
-  font-size: 12px;
-  max-width: 420px;
+    margin: 0;
+    font-size: 12px;
+    max-width: 420px;
 }
 
+/* Allows the chart itself to scroll sideways when many countries are shown */
 .vbar-chart-area {
-  width: 100%;
+    width: 100%;
+    overflow-x: auto;
 }
 
 .vbar-svg {
-  display: block;
-  width: 100%;
-  height: auto;
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 .vbar-title {
-  font-family: var(--font-body);
-  font-size: 18px;
-  font-weight: bold;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 .vbar-axis-label {
-  font-family: var(--font-body);
-  font-size: 14px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
 }
 
 .vbar-x-axis text,
 .vbar-y-axis text {
-  font-family: var(--font-body);
-  font-size: 12px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
 }
 
 .vbar-grid line {
-  stroke: #ddd;
+    stroke: #ddd;
 }
 
 .vbar {
-  fill: #1f77b4;
-  cursor: pointer;
+    fill: #1f77b4;
+    cursor: pointer;
 }
 
 .vbar.vbar-active {
-  fill: #17c8f4;
+    fill: #17c8f4;
+}
+
+/* Invisible hover area for each country */
+.vbar-hit {
+    fill: transparent;
+    cursor: pointer;
 }
 
 .vbar-tooltip {
-  position: absolute;
-  pointer-events: none;
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.97);
-  border: 1px solid #888;
-  border-radius: 4px;
-  font-family: var(--font-body);
-  font-size: 13px;
-  line-height: 1.4;
-  white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  z-index: 10;
+    position: absolute;
+    pointer-events: none;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid #888;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 10;
 }
 
 .vbar-message {
-  font-family: var(--font-body);
-  color: #a00;
+    font-family: Arial, sans-serif;
+    color: #a00;
 }
 
-#chart-title {
-  font-size: 18px;
-  font-family: var(--font-display);
-  line-height: 1.2;
-  color: var(--ink-soft);
-  text-align: center;
-  margin-top: 14px;
-}
-
-#newdiv {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 5px;
-  width: 100%;
-  margin: 8px 0 16px 0;
-  font-family: var(--font-body);
-}
-
-#myp {
-  width: 100%;
-  margin: 0 0 10px 0;
-}
-
-#filterbutton {
-  padding: 4px 8px;
+/* Displays countries that do not contain Persons data for the selected year */
+.vbar-missing-note {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #555;
+    margin: 8px 0 0 0;
 }
