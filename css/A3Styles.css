@@ -497,3 +497,31 @@ h3 {
   font-family: var(--font-body);
   color: #a00;
 }
+
+#chart-title {
+  font-size: 18px;
+  font-family: var(--font-display);
+  line-height: 1.2;
+  color: var(--ink-soft);
+  text-align: center;
+  margin-top: 14px;
+}
+
+#newdiv {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 5px;
+  width: 100%;
+  margin: 8px 0 16px 0;
+  font-family: var(--font-body);
+}
+
+#myp {
+  width: 100%;
+  margin: 0 0 10px 0;
+}
+
+#filterbutton {
+  padding: 4px 8px;
+}
