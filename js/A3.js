@@ -1,7 +1,29 @@
 function groupbarchart() {
+  var groupchart = document.getElementById("groupchart");
+  var menuDiv = document.createElement("div");
+  menuDiv.id = "newdiv";
+  groupchart.before(menuDiv);
 
-  var margin = {top: 10, right: 30, bottom: 120, left: 60},
-    width = 2000 - margin.left - margin.right,
+  var titleDiv = document.createElement("div");
+  titleDiv.id = "chart-title";
+  titleDiv.textContent = "Grouped Bar Chart: Practising Caring Personnel (Persons)";
+  menuDiv.before(titleDiv);
+
+  d3.select("#newdiv")
+  .append("p")
+  .attr("id", "myp")
+  .html("Instructions:<br> -Filter option left click and select year, filters by year <br> -Reset to return to all years");
+  
+  var chartContainer = d3.select(menuDiv);
+  chartContainer.append("select")
+    .attr("id", "filterbutton");
+  chartContainer.append("button")
+    .attr("id", "reset")
+    .attr("type", "button")
+    .text("Reset");
+
+  var margin = {top: 10, right: 10, bottom: 120, left: 60},
+    width = 1020 - margin.left - margin.right,
     height = 1000 - margin.top - margin.bottom;
 
   //SVG for chart block
@@ -10,8 +32,7 @@ function groupbarchart() {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
 
   d3.csv("dataset/OECDPersons.csv").then(function(data) {
   //skip first column and assign each column to variable array
@@ -26,37 +47,43 @@ function groupbarchart() {
       .padding([0.2])
         svg.append("g")
           .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(xScale).tickSize(5))
+          .call(d3.axisBottom(xScale).tickSize(6))
           .selectAll("text")
           .attr("transform", "rotate(-45)")
           .style("text-anchor", "end");
 
   // Add Y axis
   var yScale = d3.scaleLinear()
-    .domain([0, 1500000])
-    .range([ height, 0 ]);
+    .domain([0, 1000000])
+    .range([ height, 0 ])
   svg.append("g")
-    .call(d3.axisLeft(yScale));
+    .call(d3.axisLeft(yScale).ticks(15));
 
   //Another xScale to add multiple bars
   var xSubgroup = d3.scaleBand()
     .domain(years)
     .range([0, xScale.bandwidth()])
-    .padding([0.05])
+    .padding([0])
  
   var color = d3.scaleOrdinal()
     .domain(years, legends)
-    .range(['#a6cee3',
-  '#1f78b4',
-  '#b2df8a',
-  '#33a02c',
-  '#fb9a99',
-  '#e31a1c',
-  '#fdbf6f',
-  '#ff7f00',
-  '#cab2d6',
-  '#6a3d9a',
-  '#ffff99'])
+    .range(['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99'])
+
+  var tooltip = d3.select("body")
+    .selectAll("#grouped-bar-tooltip")
+    .data([null])
+    .join("div")
+    .attr("id", "grouped-bar-tooltip")
+    .style("position", "fixed")
+    .style("pointer-events", "none")
+    .style("opacity", 0)
+    .style("z-index", 1000)
+    .style("padding", "6px 8px")
+    .style("color", "#111")
+    .style("background-color", "white")
+    .style("border", "1px solid #777")
+    .style("border-radius", "3px")
+    .style("font-size", "12px");
 
   //Rectangle bars
   svg.append("g")
@@ -75,26 +102,27 @@ function groupbarchart() {
     .attr("width", xSubgroup.bandwidth())
     .attr("height", function(d) { return height - yScale(d.value); })
     .attr("fill", function(d) { return color(d.key)})
-
-      .on("mouseover", function(event, d) { //tooltip function
-                d3.select(this).attr("fill", "orange");
-                var xPosition = parseFloat(d3.select(this).attr("x")); //tooltip position relative to bar position
-                var yPosition = parseFloat(d3.select(this).attr("y"));
-
-                svg.append("text")
-                    .attr("id", "tooltip")
-                    .attr("x", xPosition + xSubgroup.bandwidth() / 4)
-                    .attr("y", yPosition + 14)
-                    .text(d);
-      })
-      .on("mouseout", function(d) { //mouse out function colour change
-          d3.select(this).attr("fill", function(d) { return color(d.key)});
-          d3.select("#tooltip").remove();
-      });
+    //tooltip
+    .on("mouseover", function(event) {
+      tooltip.style("opacity", 1);
+      d3.select(this)
+        .style("stroke", "black")
+        .style("stroke-width", "1px");
+    })
+    .on("mousemove", function(event, d) {
+      tooltip
+        .html("Year: " + d.key + "<br>Value: " + d3.format(",")(d.value))
+        .style("left", (event.clientX + 12) + "px")
+        .style("top", (event.clientY + 12) + "px");
+    })
+    .on("mouseleave", function() {
+      tooltip.style("opacity", 0);
+      d3.select(this).style("stroke", "none");
+    });
 
   //Block for legend 
   var size = 20
-  var itemWidth = 120
+  var itemWidth = 80
   var legendY = height + 80
 
   svg.selectAll("squares")
@@ -118,26 +146,31 @@ function groupbarchart() {
       .attr("text-anchor", "start")
       .style("alignment-baseline", "middle")
 
-    // add the options to the button
-    d3.select("#filterbutton")
-      .selectAll('myOptions')
-     	.data(years) //years option
+    var yearFilter = d3.select("#filterbutton");
+    yearFilter.append("option")
+      .attr("value", "")
+      .text("All years");
+    yearFilter.selectAll(".year-option")
+      .data(years)
       .enter()
-    	.append('option')
-      .text(function (d) { return d; }) 
-      .attr("value", function (d) { return d;
-    });
+      .append("option")
+      .attr("class", "year-option")
+      .attr("value", function(d) { return d; })
+      .text(function(d) { return d; });
 
-    //when selecting year via button, function updates the bars
-    d3.select("#filterbutton").on("change", function() {
+    yearFilter.on("change", function() {
       var selectedYear = d3.select(this).property("value");
-      update(selectedYear);
+      if (selectedYear) {
+        update(selectedYear);
+      } else {
+        showAllYears();
+      }
     });
 
-    //reset button, refreshes chart to display all years
     d3.select("#reset").on("click", function() {
-      location.reload();//reloads current document
-    }); 
+      yearFilter.property("value", "");
+      showAllYears();
+    });
 
   //animates bar after selecting the year
   function update(selectedYear) {
@@ -147,6 +180,15 @@ function groupbarchart() {
       .attr("x", function(d) { return d.key === selectedYear ? 0 : xSubgroup(d.key); })
       .attr("width", function(d) { return d.key === selectedYear ? xScale.bandwidth() : xSubgroup.bandwidth(); })
       .style("opacity", function(d) { return d.key === selectedYear ? 1 : 0; });
+  }
+
+  function showAllYears() {
+    svg.selectAll(".bar")
+      .transition()
+      .duration(500)
+      .attr("x", function(d) { return xSubgroup(d.key); })
+      .attr("width", xSubgroup.bandwidth())
+      .style("opacity", 1);
   }
 });
 }

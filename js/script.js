@@ -34,6 +34,12 @@ d3.select("#option1").on("click", function () {
 d3.select("#option3").on("click", function () {
 
     d3.select(".chartbox")
-        .html("<p class=\"chartbox__placeholder\">Grouped bar chart is coming soon</p>");
+        .html(
+            "<div class=\"gbar-charts\">" +
+                "<div id=\"groupchart\"></div>" +
+            "</div>"
+        );
+
+    groupbarchart("#groupchart");
 
 });
