@@ -1,14 +1,10 @@
 // Vertical bar chart: practising caring personnel (Persons) by country
 // Author: Isuri Ihalagamage
-
 const PERSONS_CSV_FILE = "OECD.ELS.HD,DSD_HEALTH_REAC_EMP@DF_CARE,+.......P..csv";
+const MAX_COUNTRIES = Infinity;
 
-
-const MAX_COUNTRIES = 12;
-
-const MAX_COUNTRIES_SMALL = 8;
-const SMALL_SCREEN_WIDTH = 560;
-
+const VBAR_PX_PER_COUNTRY = 34;
+const VBAR_MIN_CHART_WIDTH = 800;
 
 const MIN_COUNTRIES_FOR_DEFAULT = 10;
 
@@ -27,7 +23,6 @@ const VBAR_ACTIVITY_STATUS = "Practicing";
 const VBAR_HEALTH_PROFESSION = "Caring personnel";
 const VBAR_ACTIVITY_STATUS_LABEL = "Practising";
 
-// Load dataset (same local/GitHub fallback pattern as the horizontal chart)
 function loadPersonsCsv() {
     var localEncoded = "dataset/" + encodeURIComponent(PERSONS_CSV_FILE);
     var localPlain = "dataset/" + PERSONS_CSV_FILE;
@@ -39,7 +34,6 @@ function loadPersonsCsv() {
         .catch(function () { return d3.csv(github); });
 }
 
-// Clean and convert the raw CSV rows for one metric
 function preparePersonsData(rawData, metricKey) {
     var metric = VBAR_METRICS[metricKey];
 
@@ -67,13 +61,11 @@ function preparePersonsData(rawData, metricKey) {
         });
 }
 
-// Sorted list of years that actually have valid data
 function getAvailableYears(data) {
     return Array.from(new Set(data.map(function (d) { return d.year; })))
         .sort(function (a, b) { return a - b; });
 }
 
-// Most recent year with at least MIN_COUNTRIES_FOR_DEFAULT countries
 function getDefaultYear(data, years) {
     for (var i = years.length - 1; i >= 0; i--) {
         var count = getDataForYear(data, years[i]).length;
@@ -122,7 +114,6 @@ function drawVerticalBarChartPersons(containerId) {
     const chartArea = container.append("div")
         .attr("class", "vbar-chart-area");
 
-    // Tooltip lives inside the chart container, so it is removed with the chart
     const tooltip = container.append("div")
         .attr("class", "vbar-tooltip")
         .style("opacity", 0);
@@ -141,7 +132,6 @@ function drawVerticalBarChartPersons(containerId) {
         const years = getAvailableYears(data);
         const defaultYear = getDefaultYear(data, years);
 
-        // Year options (only years present in the filtered data)
         yearSelect.selectAll("option")
             .data(years)
             .join("option")
@@ -153,19 +143,24 @@ function drawVerticalBarChartPersons(containerId) {
             updateChart();
         });
 
-        updateChart();
+        const allCountries = Array.from(new Set(data.map(function (d) { return d.country; })))
+            .sort();
 
-        function getMaxCountries() {
-            var node = chartArea.node();
-            var width = node ? node.getBoundingClientRect().width : 0;
-            return (width > 0 && width < SMALL_SCREEN_WIDTH) ? MAX_COUNTRIES_SMALL : MAX_COUNTRIES;
-        }
+        const missingNote = container.insert("p", ".vbar-tooltip")
+            .attr("class", "vbar-missing-note");
+
+        updateChart();
 
         function updateChart() {
             var year = +yearSelect.property("value");
             var allForYear = getDataForYear(data, year);
-            var maxCountries = getMaxCountries();
-            var yearData = allForYear.slice(0, maxCountries);
+            var yearData = allForYear.slice(0, MAX_COUNTRIES);
+
+            var shown = new Set(allForYear.map(function (d) { return d.country; }));
+            var missing = allCountries.filter(function (c) { return !shown.has(c); });
+            missingNote.text(missing.length > 0
+                ? "No " + metric.label + " data in the dataset for " + year + ": " + missing.join(", ") + "."
+                : "");
 
             if (allForYear.length > yearData.length) {
                 hint.text("Showing the top " + yearData.length + " of " + allForYear.length +
@@ -180,10 +175,10 @@ function drawVerticalBarChartPersons(containerId) {
             drawChart(yearData, year);
         }
 
-        // Render the SVG chart
         function drawChart(yearData, year) {
             var margin = { top: 60, right: 30, bottom: 130, left: 100 };
-            var outerWidth = 800;
+            var outerWidth = Math.max(VBAR_MIN_CHART_WIDTH,
+                margin.left + margin.right + yearData.length * VBAR_PX_PER_COUNTRY);
             var outerHeight = 520;
             var width = outerWidth - margin.left - margin.right;
             var height = outerHeight - margin.top - margin.bottom;
@@ -192,6 +187,7 @@ function drawVerticalBarChartPersons(containerId) {
                 .attr("class", "vbar-svg")
                 .attr("viewBox", "0 0 " + outerWidth + " " + outerHeight)
                 .attr("preserveAspectRatio", "xMidYMid meet")
+                .style("min-width", Math.round(outerWidth * 0.8) + "px")
                 .attr("role", "img")
                 .attr("aria-label", VBAR_ACTIVITY_STATUS_LABEL + " caring personnel by country, " +
                     metric.label + ", " + year);
@@ -268,16 +264,25 @@ function drawVerticalBarChartPersons(containerId) {
                 .text(metric.yAxisLabel);
 
             // Bars
-            svg.selectAll(".vbar")
+            var bars = svg.selectAll(".vbar")
                 .data(yearData)
                 .join("rect")
                 .attr("class", "vbar")
                 .attr("x", function (d) { return x(d.country); })
                 .attr("y", function (d) { return y(d.value); })
                 .attr("width", x.bandwidth())
-                .attr("height", function (d) { return height - y(d.value); })
+                .attr("height", function (d) { return height - y(d.value); });
+
+            svg.selectAll(".vbar-hit")
+                .data(yearData)
+                .join("rect")
+                .attr("class", "vbar-hit")
+                .attr("x", function (d) { return x(d.country) - x.step() * x.paddingInner() / 2; })
+                .attr("y", 0)
+                .attr("width", x.step())
+                .attr("height", height)
                 .on("mouseover", function (event, d) {
-                    d3.select(this).classed("vbar-active", true);
+                    bars.classed("vbar-active", function (b) { return b.country === d.country; });
                     tooltip
                         .html(
                             "<strong>Country:</strong> " + d.country + "<br>" +
@@ -293,20 +298,18 @@ function drawVerticalBarChartPersons(containerId) {
                     moveTooltip(event);
                 })
                 .on("mouseout", function () {
-                    d3.select(this).classed("vbar-active", false);
+                    bars.classed("vbar-active", false);
                     tooltip.style("opacity", 0);
                 });
         }
 
-        // Position the tooltip relative to the chart container (D3 v6 pointer API)
         function moveTooltip(event) {
             var containerNode = container.node();
             var pos = d3.pointer(event, containerNode);
             var tipNode = tooltip.node();
             var tipWidth = tipNode.offsetWidth;
             var left = pos[0] + 14;
-
-            // Keep the tooltip inside the container on the right-hand side
+            
             if (left + tipWidth > containerNode.clientWidth) {
                 left = pos[0] - tipWidth - 14;
             }
