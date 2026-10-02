@@ -22,7 +22,7 @@ function groupbarchart() {
     .attr("type", "button")
     .text("Reset");
 
-  var margin = {top: 10, right: 10, bottom: 120, left: 60},
+  var margin = {top: 10, right: 10, bottom: 160, left: 80},
     width = 1020 - margin.left - margin.right,
     height = 1000 - margin.top - margin.bottom;
 
@@ -58,6 +58,19 @@ function groupbarchart() {
     .range([ height, 0 ])
   svg.append("g")
     .call(d3.axisLeft(yScale).ticks(15));
+
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -height / 2)
+    .attr("y", -margin.left + 10)
+    .attr("text-anchor", "middle")
+    .text("Number of caring personnel");
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height + 85)
+    .attr("text-anchor", "middle")
+    .text("Country");
 
   //Another xScale to add multiple bars
   var xSubgroup = d3.scaleBand()
@@ -123,7 +136,7 @@ function groupbarchart() {
   //Block for legend 
   var size = 20
   var itemWidth = 80
-  var legendY = height + 80
+  var legendY = height + 120
 
   svg.selectAll("squares")
     .data(legends)
@@ -174,7 +187,10 @@ function groupbarchart() {
 
   //animates bar after selecting the year
   function update(selectedYear) {
+    tooltip.style("opacity", 0).html("");
     svg.selectAll(".bar")
+      .style("stroke", "none")
+      .style("pointer-events", function(d) { return d.key === selectedYear ? "auto" : "none"; })
       .transition()
       .duration(500)
       .attr("x", function(d) { return d.key === selectedYear ? 0 : xSubgroup(d.key); })
@@ -183,7 +199,10 @@ function groupbarchart() {
   }
 
   function showAllYears() {
+    tooltip.style("opacity", 0).html("");
     svg.selectAll(".bar")
+      .style("stroke", "none")
+      .style("pointer-events", "auto")
       .transition()
       .duration(500)
       .attr("x", function(d) { return xSubgroup(d.key); })
