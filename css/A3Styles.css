@@ -514,3 +514,65 @@ h3 {
     color: #555;
     margin: 8px 0 0 0;
 }
+
+/* Grouped bar chart (Persons) - Author: Truong Nguyen */
+#newdiv {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 8px;
+}
+
+#myp {
+  flex-basis: 100%;
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+#reset {
+  padding: 0px 4px;
+  margin-bottom: 6px;
+  background: var(--paper-deep);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  font-size: small;
+}
+
+
+#filterbutton {
+    padding: 4px 6px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    min-width: 100px;
+}
+
+#chart-title {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  text-align: center;
+  font-family: var(--font-display);
+  color: var(--ink-soft);
+}
+
+#groupchart {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#groupchart svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.bar {
+  opacity: 1;
+}
