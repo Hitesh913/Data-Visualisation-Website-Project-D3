@@ -124,14 +124,16 @@ function drawHorizontalBarChartPer1000(containerId) {
 
         // Draw chart
         function drawChart(yearData, year) {
-            var margin = { top: 50, right: 80, bottom: 50, left: 150 };
+            var margin = { top: 50, right: 90, bottom: 56, left: 130 };
             var width = 800 - margin.left - margin.right;
             var rowHeight = yearData.length > 0 && yearData.length <= 5 ? 48 : 24;
             var height = Math.max(240, Math.max(yearData.length, 1) * rowHeight);
 
             var svg = chartArea.append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
+                .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
+                .attr("preserveAspectRatio", "xMidYMid meet")
+                .attr("role", "img")
+                .attr("aria-label", "Caring personnel per 1,000 inhabitants by country, " + year)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -155,6 +157,13 @@ function drawHorizontalBarChartPer1000(containerId) {
                 .range([0, height])
                 .padding(0.2);
 
+            // Light vertical gridlines
+            svg.append("g")
+                .attr("class", "vbar-grid")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x).ticks(6).tickSize(-height).tickFormat(""))
+                .call(function (g) { g.select(".domain").remove(); });
+
             // Axes
             svg.append("g")
                 .attr("transform", "translate(0," + height + ")")
@@ -164,13 +173,13 @@ function drawHorizontalBarChartPer1000(containerId) {
 
             svg.append("text")
                 .attr("x", width / 2)
-                .attr("y", height + 40)
+                .attr("y", height + 46)
                 .attr("text-anchor", "middle")
                 .attr("class", "hbar-axis-label")
                 .text("Caring personnel per 1,000 inhabitants");
 
             svg.append("g")
-                .call(d3.axisLeft(y));
+                .call(d3.axisLeft(y).tickSizeOuter(0));
 
             // Bars
             svg.selectAll(".hbar")
@@ -181,7 +190,7 @@ function drawHorizontalBarChartPer1000(containerId) {
                 .attr("y", function (d) { return y(d.country); })
                 .attr("width", function (d) { return x(d.value); })
                 .attr("height", y.bandwidth())
-                .attr("fill", "#b01513")
+                .attr("rx", 2)
                 .append("title")
                 .text(function (d) {
                     if (d.missing) {
@@ -189,6 +198,19 @@ function drawHorizontalBarChartPer1000(containerId) {
                     }
                     return d.country + ": " + d3.format(".2f")(d.value) + " per 1,000 inhabitants";
                 });
+
+            drawValueLabels(svg, yearData, x, y, year);
+        }
+
+        function drawValueLabels(svg, yearData, x, y, year) {
+            svg.selectAll(".hbar-value")
+                .data(yearData)
+                .join("text")
+                .attr("class", "hbar-value")
+                .attr("x", function (d) { return x(d.value) + 6; })
+                .attr("y", function (d) { return y(d.country) + y.bandwidth() / 2; })
+                .attr("dy", "0.35em")
+                .text(function (d) { return d.missing ? "No data for " + year : d3.format(".2f")(d.value); });
         }
 
         function getSelectedCountries() {
