@@ -12,7 +12,7 @@ function groupbarchart() {
   d3.select("#newdiv")
   .append("p")
   .attr("id", "myp")
-  .html("Instructions:<br> -Filter option left click and select year, filters by year <br> -Reset to return to all years");
+  .html("<strong>How to use:</strong> pick a year from the dropdown to focus on it, or press Reset to bring back every year. Hover over a bar for its exact value.");
   
   var chartContainer = d3.select(menuDiv);
   chartContainer.append("select")
@@ -22,15 +22,17 @@ function groupbarchart() {
     .attr("type", "button")
     .text("Reset");
 
-  var margin = {top: 10, right: 10, bottom: 160, left: 80},
+  var margin = {top: 20, right: 20, bottom: 170, left: 80},
     width = 1020 - margin.left - margin.right,
-    height = 1000 - margin.top - margin.bottom;
+    height = 720 - margin.top - margin.bottom;
 
   //SVG for chart block
   var svg = d3.select("#groupchart")
   .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .attr("role", "img")
+    .attr("aria-label", "Grouped bar chart of practising caring personnel by country and year")
   .append("g")
     .attr("transform","translate(" + margin.left + "," + margin.top + ")");
 
@@ -47,28 +49,41 @@ function groupbarchart() {
       .padding([0.2])
         svg.append("g")
           .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(xScale).tickSize(6))
+          .call(d3.axisBottom(xScale).tickSize(0).tickPadding(8))
           .selectAll("text")
           .attr("transform", "rotate(-45)")
           .style("text-anchor", "end");
 
   // Add Y axis
+  // Scale to the largest value in the data so no bar is cut off
+  var maxValue = d3.max(data, function(d) {
+    return d3.max(years, function(key) { return d[key] === "" ? 0 : +d[key]; });
+  });
   var yScale = d3.scaleLinear()
-    .domain([0, 1000000])
+    .domain([0, maxValue])
+    .nice()
     .range([ height, 0 ])
+
+  // Light horizontal gridlines
   svg.append("g")
-    .call(d3.axisLeft(yScale).ticks(15));
+    .attr("class", "gbar-grid")
+    .call(d3.axisLeft(yScale).ticks(8).tickSize(-width).tickFormat(""));
+
+  svg.append("g")
+    .call(d3.axisLeft(yScale).ticks(8).tickFormat(d3.format(".2~s")));
 
   svg.append("text")
+    .attr("class", "gbar-axis-label")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", -margin.left + 10)
+    .attr("y", -margin.left + 20)
     .attr("text-anchor", "middle")
     .text("Number of caring personnel");
 
   svg.append("text")
+    .attr("class", "gbar-axis-label")
     .attr("x", width / 2)
-    .attr("y", height + 85)
+    .attr("y", height + 95)
     .attr("text-anchor", "middle")
     .text("Country");
 
@@ -80,23 +95,15 @@ function groupbarchart() {
  
   var color = d3.scaleOrdinal()
     .domain(years, legends)
-    .range(['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99'])
+    // Years are ordered, so use a sequential ramp (gold for 2015 through to deep teal for 2025)
+    .range(d3.quantize(d3.interpolateRgbBasis(["#e9b949", "#e07b39", "#b8432f", "#7d3a62", "#3d5a80", "#1a4a50"]), legends.length))
 
   var tooltip = d3.select("body")
     .selectAll("#grouped-bar-tooltip")
     .data([null])
     .join("div")
     .attr("id", "grouped-bar-tooltip")
-    .style("position", "fixed")
-    .style("pointer-events", "none")
-    .style("opacity", 0)
-    .style("z-index", 1000)
-    .style("padding", "6px 8px")
-    .style("color", "#111")
-    .style("background-color", "white")
-    .style("border", "1px solid #777")
-    .style("border-radius", "3px")
-    .style("font-size", "12px");
+    .style("opacity", 0);
 
   //Rectangle bars
   svg.append("g")
@@ -115,16 +122,19 @@ function groupbarchart() {
     .attr("width", xSubgroup.bandwidth())
     .attr("height", function(d) { return height - yScale(d.value); })
     .attr("fill", function(d) { return color(d.key)})
+    .attr("rx", 1)
     //tooltip
     .on("mouseover", function(event) {
       tooltip.style("opacity", 1);
       d3.select(this)
-        .style("stroke", "black")
+        .style("stroke", "#0f2f34")
         .style("stroke-width", "1px");
     })
     .on("mousemove", function(event, d) {
       tooltip
-        .html("Year: " + d.key + "<br>Value: " + d3.format(",")(d.value))
+        .html("<strong>Country:</strong> " + d3.select(this.parentNode).datum().Timeperiod +
+              "<br><strong>Year:</strong> " + d.key +
+              "<br><strong>Personnel:</strong> " + (d.value ? d3.format(",")(d.value) : "No data"))
         .style("left", (event.clientX + 12) + "px")
         .style("top", (event.clientY + 12) + "px");
     })
@@ -134,27 +144,29 @@ function groupbarchart() {
     });
 
   //Block for legend 
-  var size = 20
-  var itemWidth = 80
-  var legendY = height + 120
+  var size = 14
+  var itemWidth = 72
+  var legendY = height + 130
+  var legendX = (width - legends.length * itemWidth) / 2
 
   svg.selectAll("squares")
     .data(legends)
     .enter()
     .append("rect")
-      .attr("x", function(d,i){ return i*itemWidth })
+      .attr("x", function(d,i){ return legendX + i*itemWidth })
       .attr("y", legendY)
       .attr("width", size)
       .attr("height", size)
+      .attr("rx", 3)
       .style("fill", function(d){ return color(d) })
 
   svg.selectAll("legendtext")
     .data(legends)
     .enter()
     .append("text")
-      .attr("x", function(d,i){ return i*itemWidth + size*1.2 })
+      .attr("x", function(d,i){ return legendX + i*itemWidth + size*1.5 })
       .attr("y", legendY + size/2)
-      .style("fill", function(d){ return color(d) })
+      .style("font-size", "13px")
       .text(function(d){ return d })
       .attr("text-anchor", "start")
       .style("alignment-baseline", "middle")
