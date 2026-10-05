@@ -1,6 +1,14 @@
+// Highlights the selected chart button
+function setActiveTab(button) {
+    d3.selectAll(".buttons button").attr("aria-selected", "false");
+    d3.select(button).attr("aria-selected", "true");
+}
+
 // Horizontal bar charts
 // Author: Hitesh Kumar
 d3.select("#option2").on("click", function () {
+
+    setActiveTab(this);
 
     d3.select(".chartbox")
         .html(
@@ -18,6 +26,8 @@ d3.select("#option2").on("click", function () {
 // Author: Isuri Ihalagamage
 d3.select("#option1").on("click", function () {
 
+    setActiveTab(this);
+
     d3.select(".chartbox")
         .html(
             "<div class=\"vbar-charts\">" +
@@ -30,8 +40,11 @@ d3.select("#option1").on("click", function () {
 });
 
 
-// Grouped bar charts — coming soon
+// Grouped bar charts
+// Author: Truong Nguyen
 d3.select("#option3").on("click", function () {
+
+    setActiveTab(this);
 
     d3.select(".chartbox")
         .html(
