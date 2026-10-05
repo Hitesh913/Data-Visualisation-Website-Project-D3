@@ -9,7 +9,7 @@
 <title>Caring Personnel World Data</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <link rel="stylesheet" href="css/A3Styles.css"/>
 </head>
@@ -18,43 +18,80 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <p class="site-header__brand">Caring Personnel World Data</p>
-    <p class="site-header__subtitle">OECD Caring Personnel Dataset</p>
+    <a class="site-header__brand" href="#top">
+      <span class="site-header__mark" aria-hidden="true"></span>
+      Caring Personnel World Data
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="#overview">Overview</a>
+      <a href="#charts">Charts</a>
+      <a href="#about">About</a>
+    </nav>
   </div>
 </header>
 
-<main class="site-main">
-  <section class="intro">
-    <div class="intro__copy">
-      <h2>Explore caring personnel worldwide</h2>
-      <p>
+<main class="site-main" id="top">
+  <section class="hero" id="overview">
+    <div class="hero__copy">
+      <p class="eyebrow">OECD Caring Personnel Dataset</p>
+      <h1>Who cares for the world?</h1>
+      <p class="hero__lede">
         Compare practising caring personnel across countries and years using
         OECD health workforce data, shown through interactive D3.js charts.
       </p>
+      <ul class="hero__facts">
+        <li><strong>34</strong><span>countries</span></li>
+        <li><strong>2015–2025</strong><span>years covered</span></li>
+        <li><strong>2</strong><span>measures</span></li>
+      </ul>
+      <a class="hero__cta" href="#charts">Explore the charts</a>
     </div>
-    <div class="intro__visual">
-      <img src="healthbackground.jpg" alt="Healthcare and caring personnel context" width="900"/>
+    <div class="hero__visual">
+      <img src="healthbackground.jpg" alt="Stethoscopes and glasses over a world map with a heartbeat line" width="900"/>
     </div>
   </section>
 
-  <section class="visualisations">
-    <h2>Data Visualised</h2>
-    <h3>Instructions</h3>
-    <p>Use the buttons below to switch chart views. Each chart supports year selection, sorting, and country comparison through its own controls.</p>
-
-    <div class="buttons">
-      <button id="option3" type="button">Grouped bar charts</button>
-      <button id="option1" type="button">Vertical bar charts</button>
-      <button id="option2" type="button">Horizontal bar charts</button>
+  <section class="visualisations" id="charts">
+    <div class="section-head">
+      <p class="eyebrow">Data visualised</p>
+      <h2>Pick a view</h2>
+      <p>Each chart has its own controls for year selection, sorting and country comparison. Hover over bars to see exact values.</p>
     </div>
 
-    <div class="chartbox">
-      <p class="chartbox__placeholder">Chart will be shown here upon button selection</p>
+    <div class="buttons" role="tablist" aria-label="Chart views">
+      <button id="option3" type="button" role="tab" aria-selected="false">
+        <span class="buttons__icon buttons__icon--grouped" aria-hidden="true"></span>
+        <span class="buttons__text">
+          <span class="buttons__title">Grouped bars</span>
+          <span class="buttons__desc">Every year, side by side</span>
+        </span>
+      </button>
+      <button id="option1" type="button" role="tab" aria-selected="false">
+        <span class="buttons__icon buttons__icon--vertical" aria-hidden="true"></span>
+        <span class="buttons__text">
+          <span class="buttons__title">Vertical bars</span>
+          <span class="buttons__desc">Total persons by country</span>
+        </span>
+      </button>
+      <button id="option2" type="button" role="tab" aria-selected="false">
+        <span class="buttons__icon buttons__icon--horizontal" aria-hidden="true"></span>
+        <span class="buttons__text">
+          <span class="buttons__title">Horizontal bars</span>
+          <span class="buttons__desc">Per 1,000 inhabitants</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="chartbox" role="tabpanel" aria-live="polite">
+      <div class="chartbox__placeholder">
+        <span class="chartbox__placeholder-icon" aria-hidden="true"></span>
+        <p>Choose a view above to load a chart</p>
+      </div>
     </div>
   </section>
 </main>
 
-<footer class="site-footer">
+<footer class="site-footer" id="about">
   <div class="site-footer__inner">
     <div class="site-footer__about">
       <p class="site-footer__label">About this project</p>
@@ -62,6 +99,7 @@
         This is a data visualisation project for COS30045, built with HTML, CSS,
         JavaScript and D3.js to explore OECD Caring Personnel data across countries and years.
       </p>
+      <p class="site-footer__source">Data source: OECD Health Statistics — Health and social employment.</p>
     </div>
     <div class="site-footer__authors">
       <p class="site-footer__label">Authors</p>
