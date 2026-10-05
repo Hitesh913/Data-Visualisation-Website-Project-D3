@@ -9,6 +9,24 @@ function groupbarchart() {
   titleDiv.textContent = "Grouped Bar Chart: Practising Caring Personnel (Persons)";
   menuDiv.before(titleDiv);
 
+  // Supporting context
+  var contextDiv = document.createElement("div");
+  contextDiv.className = "chart-context chart-context--gbar";
+  contextDiv.innerHTML =
+    "<p class=\"chart-context__lead\">" +
+      "This visualisation shows <strong>practising caring personnel (Persons)</strong> " +
+      "for each country across multiple years side by side, so year-to-year patterns are easy to compare." +
+    "</p>" +
+    "<ul class=\"chart-context__list\">" +
+      "<li><strong>Dataset:</strong> OECD Caring Personnel data reshaped as <code>OECDPersons.csv</code> " +
+      "(countries as rows, years as columns).</li>" +
+      "<li><strong>What you can discover:</strong> which countries grow or shrink over time, " +
+      "how years compare within a country, and where values stand out against neighbouring years.</li>" +
+      "<li><strong>Source:</strong> OECD Health Statistics — Health and social employment " +
+      "(Caring personnel / personal care workers).</li>" +
+    "</ul>";
+  menuDiv.before(contextDiv);
+
   d3.select("#newdiv")
   .append("p")
   .attr("id", "myp")
