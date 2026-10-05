@@ -622,6 +622,56 @@ a {
   fill: var(--ink-soft);
 }
 
+/* ---------- Supporting context (all charts) ---------- */
+.chart-context {
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.15rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.chart-context--hbar {
+  border-left: 3px solid var(--crimson);
+}
+
+.chart-context--vbar {
+  border-left: 3px solid var(--teal-600);
+}
+
+.chart-context--gbar {
+  border-left: 3px solid var(--gold);
+}
+
+.chart-context__lead {
+  margin: 0 0 0.75rem;
+  color: var(--ink-soft);
+  max-width: 70ch;
+}
+
+.chart-context__list {
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.chart-context__list li {
+  margin: 0 0 0.4rem;
+}
+
+.chart-context__list li:last-child {
+  margin-bottom: 0;
+}
+
+.chart-context code {
+  font-size: 0.85em;
+  padding: 0.1em 0.35em;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
 /* ---------- Horizontal bar chart (Per 1,000) — Author: Hitesh Kumar ---------- */
 .hbar-charts {
   width: 100%;
