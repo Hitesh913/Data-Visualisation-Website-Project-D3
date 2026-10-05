@@ -16,6 +16,7 @@
 
 <body>
 
+<!-- Site header and main navigation -->
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-header__brand" href="#top">
@@ -31,6 +32,7 @@
 </header>
 
 <main class="site-main" id="top">
+  <!-- Hero / overview section -->
   <section class="hero" id="overview">
     <div class="hero__copy">
       <p class="eyebrow">OECD Caring Personnel Dataset</p>
@@ -51,6 +53,7 @@
     </div>
   </section>
 
+  <!-- Chart selection and D3 visualisation panel -->
   <section class="visualisations" id="charts">
     <div class="section-head">
       <p class="eyebrow">Data visualised</p>
@@ -58,6 +61,7 @@
       <p>Each chart has its own controls for year selection, sorting and country comparison. Hover over bars to see exact values.</p>
     </div>
 
+    <!-- Buttons load each chart into the panel below -->
     <div class="buttons" role="tablist" aria-label="Chart views">
       <button id="option3" type="button" role="tab" aria-selected="false">
         <span class="buttons__icon buttons__icon--grouped" aria-hidden="true"></span>
@@ -82,6 +86,7 @@
       </button>
     </div>
 
+    <!-- Selected chart is rendered here -->
     <div class="chartbox" role="tabpanel" aria-live="polite">
       <div class="chartbox__placeholder">
         <span class="chartbox__placeholder-icon" aria-hidden="true"></span>
@@ -91,6 +96,7 @@
   </section>
 </main>
 
+<!-- About section and team credits -->
 <footer class="site-footer" id="about">
   <div class="site-footer__inner">
     <div class="site-footer__about">
@@ -112,6 +118,7 @@
   </div>
 </footer>
 
+<!-- Chart scripts: horizontal, vertical, view switcher, grouped -->
 <script src="js/horizontalBarChartPer1000.js"></script>
 <script src="js/verticalBarChartPersons.js"></script>
 <script src="js/script.js"></script>
