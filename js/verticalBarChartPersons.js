@@ -94,6 +94,38 @@ function drawVerticalBarChartPersons(containerId) {
         .attr("class", "vbar-heading")
         .text("Vertical bar chart: " + VBAR_ACTIVITY_STATUS_LABEL + " Caring Personnel (" + metric.label + ")");
 
+    // Supporting context
+    const context = container.append("div")
+        .attr("class", "chart-context chart-context--vbar");
+
+    context.append("p")
+        .attr("class", "chart-context__lead")
+        .html(
+            "This visualisation shows the <strong>total number of " +
+            VBAR_ACTIVITY_STATUS_LABEL.toLowerCase() +
+            " caring personnel</strong> in each country for a selected year, " +
+            "using the OECD <em>Persons</em> metric."
+        );
+
+    const contextList = context.append("ul")
+        .attr("class", "chart-context__list");
+
+    contextList.append("li")
+        .html(
+            "<strong>Dataset:</strong> OECD Caring Personnel CSV " +
+            "(Health and social employment) loaded from the project <code>dataset</code> folder."
+        );
+    contextList.append("li")
+        .html(
+            "<strong>What you can discover:</strong> which countries have the largest caring workforces, " +
+            "how totals differ across years, and where data coverage is missing for a chosen year."
+        );
+    contextList.append("li")
+        .html(
+            "<strong>Source:</strong> OECD Health Statistics — Health and social employment " +
+            "(Caring personnel / personal care workers)."
+        );
+
     // Controls
     const controls = container.append("div")
         .attr("class", "vbar-chart-controls");
