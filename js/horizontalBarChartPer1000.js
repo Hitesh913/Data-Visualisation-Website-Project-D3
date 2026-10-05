@@ -1,9 +1,7 @@
-// Horizontal bar chart: caring personnel per 1,000 inhabitants
-// Author: Hitesh Kumar
-
+// Horizontal bar chart: Caring Personnel per 1,000 inhabitants — Author: Hitesh Kumar
 const PER1000_CSV_FILE = "OECD.ELS.HD,DSD_HEALTH_REAC_EMP@DF_CARE,+.......P..csv";
 
-// Load dataset
+// Load CSV locally first, then fall back to GitHub if needed
 function loadPer1000Csv() {
     var localEncoded = "dataset/" + encodeURIComponent(PER1000_CSV_FILE);
     var localPlain = "dataset/" + PER1000_CSV_FILE;
@@ -15,17 +13,51 @@ function loadPer1000Csv() {
         .catch(function () { return d3.csv(github); });
 }
 
+// Draw the horizontal bar chart into the given container
 function drawHorizontalBarChartPer1000(containerId) {
     const container = d3.select(containerId);
     container.html("");
 
+    // Chart heading
     container.append("h3")
         .text("Horizontal bar chart: Caring Personnel per 1,000 Inhabitants");
 
-    // Filters
+    // Supporting context for the visualisation
+    const context = container.append("div")
+        .attr("class", "chart-context chart-context--hbar");
+
+    context.append("p")
+        .attr("class", "chart-context__lead")
+        .html(
+            "This visualisation shows <strong>practising caring personnel relative to population</strong> " +
+            "using the OECD metric <em>Per 1 000 inhabitants</em>. " +
+            "It helps compare workforce density fairly across countries of different sizes."
+        );
+
+    const contextList = context.append("ul")
+        .attr("class", "chart-context__list");
+
+    contextList.append("li")
+        .html(
+            "<strong>Dataset:</strong> OECD Caring Personnel CSV " +
+            "(Health and social employment) loaded from the project <code>dataset</code> folder."
+        );
+    contextList.append("li")
+        .html(
+            "<strong>What you can discover:</strong> which countries have a higher density of caring personnel, " +
+            "how rankings change by year, and how selected countries compare when population is taken into account."
+        );
+    contextList.append("li")
+        .html(
+            "<strong>Source:</strong> OECD Health Statistics — Health and social employment " +
+            "(Caring personnel / personal care workers)."
+        );
+
+    // Year and country filters
     const controls = container.append("div")
         .attr("class", "hbar-chart-controls");
 
+    // Year dropdown
     const yearGroup = controls.append("div")
         .attr("class", "hbar-control-group");
 
@@ -36,6 +68,7 @@ function drawHorizontalBarChartPer1000(containerId) {
     const yearSelect = yearGroup.append("select")
         .attr("id", "year-per1000");
 
+    // Country checkboxes (none selected = show all)
     const countryGroup = controls.append("div")
         .attr("class", "hbar-control-group");
 
@@ -55,12 +88,13 @@ function drawHorizontalBarChartPer1000(containerId) {
         .attr("class", "hbar-control-hint")
         .text("Tick two or more countries to compare them. Leave all unchecked to show every country.");
 
+    // Chart drawing area
     const chartArea = container.append("div")
         .attr("class", "hbar-chart-area");
 
     loadPer1000Csv().then(function (rawData) {
 
-        // Prepare data
+        // Keep only Per 1 000 inhabitants rows with valid values
         const data = rawData
             .filter(function (d) {
                 return d["Unit of measure"] === "Per 1 000 inhabitants";
@@ -76,10 +110,11 @@ function drawHorizontalBarChartPer1000(containerId) {
                 return d.country && !isNaN(d.value) && d.value > 0;
             });
 
+        // Unique years in the data
         const years = Array.from(new Set(data.map(function (d) { return d.year; })))
             .sort(function (a, b) { return a - b; });
 
-        // Default year
+        // Default to a recent year with at least 10 countries
         var defaultYear = years[years.length - 1];
         for (var i = years.length - 1; i >= 0; i--) {
             var count = data.filter(function (d) { return d.year === years[i]; }).length;
@@ -89,10 +124,11 @@ function drawHorizontalBarChartPer1000(containerId) {
             }
         }
 
+        // Sorted country list for checkboxes
         const countries = Array.from(new Set(data.map(function (d) { return d.country; })))
             .sort();
 
-        // Year options
+        // Fill year dropdown
         yearSelect.selectAll("option")
             .data(years)
             .join("option")
@@ -100,7 +136,7 @@ function drawHorizontalBarChartPer1000(containerId) {
             .text(function (d) { return d; })
             .property("selected", function (d) { return d === defaultYear; });
 
-        // Country checkboxes
+        // Create one checkbox per country
         var countryLabels = countryList.selectAll("label")
             .data(countries)
             .join("label")
@@ -114,21 +150,25 @@ function drawHorizontalBarChartPer1000(containerId) {
         countryLabels.append("span")
             .text(function (d) { return d; });
 
+        // Update chart when filters change
         yearSelect.on("change", updateFromFilters);
         clearButton.on("click", function () {
             countryList.selectAll("input").property("checked", false);
             updateFromFilters();
         });
 
+        // Draw chart on first load
         updateFromFilters();
 
-        // Draw chart
+        // Draw the horizontal bars for the filtered data
         function drawChart(yearData, year) {
             var margin = { top: 50, right: 90, bottom: 56, left: 130 };
             var width = 800 - margin.left - margin.right;
+            // Use taller rows when only a few countries are shown
             var rowHeight = yearData.length > 0 && yearData.length <= 5 ? 48 : 24;
             var height = Math.max(240, Math.max(yearData.length, 1) * rowHeight);
 
+            // Create responsive SVG
             var svg = chartArea.append("svg")
                 .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
                 .attr("preserveAspectRatio", "xMidYMid meet")
@@ -137,7 +177,7 @@ function drawHorizontalBarChartPer1000(containerId) {
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            // Title
+            // SVG chart title
             svg.append("text")
                 .attr("class", "hbar-title")
                 .attr("x", width / 2)
@@ -145,7 +185,7 @@ function drawHorizontalBarChartPer1000(containerId) {
                 .attr("text-anchor", "middle")
                 .text("Caring Personnel per 1,000 Inhabitants by Country (" + year + ")");
 
-            // Scales
+            // Scales: x = density, y = country
             var maxValue = d3.max(yearData, function (d) { return d.value; });
             var x = d3.scaleLinear()
                 .domain([0, maxValue > 0 ? maxValue : 1])
@@ -157,14 +197,14 @@ function drawHorizontalBarChartPer1000(containerId) {
                 .range([0, height])
                 .padding(0.2);
 
-            // Light vertical gridlines
+            // Vertical gridlines
             svg.append("g")
                 .attr("class", "vbar-grid")
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x).ticks(6).tickSize(-height).tickFormat(""))
                 .call(function (g) { g.select(".domain").remove(); });
 
-            // Axes
+            // X and Y axes
             svg.append("g")
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x).ticks(6).tickFormat(d3.format(".2f")))
@@ -181,7 +221,7 @@ function drawHorizontalBarChartPer1000(containerId) {
             svg.append("g")
                 .call(d3.axisLeft(y).tickSizeOuter(0));
 
-            // Bars
+            // Draw bars with hover tooltips
             svg.selectAll(".hbar")
                 .data(yearData)
                 .join("rect")
@@ -202,6 +242,7 @@ function drawHorizontalBarChartPer1000(containerId) {
             drawValueLabels(svg, yearData, x, y, year);
         }
 
+        // Add value labels at the end of each bar
         function drawValueLabels(svg, yearData, x, y, year) {
             svg.selectAll(".hbar-value")
                 .data(yearData)
@@ -213,6 +254,7 @@ function drawHorizontalBarChartPer1000(containerId) {
                 .text(function (d) { return d.missing ? "No data for " + year : d3.format(".2f")(d.value); });
         }
 
+        // Get currently checked country names
         function getSelectedCountries() {
             var selected = [];
             countryList.selectAll("input:checked").each(function () {
@@ -221,13 +263,14 @@ function drawHorizontalBarChartPer1000(containerId) {
             return selected;
         }
 
-        // Apply filters
+        // Apply year/country filters and re-draw the chart
         function updateFromFilters() {
             var year = +yearSelect.property("value");
             var selectedCountries = getSelectedCountries();
             var filtered;
 
             if (selectedCountries.length > 0) {
+                // Keep selected countries even if data is missing for that year
                 filtered = selectedCountries.map(function (country) {
                     var match = data.find(function (d) {
                         return d.year === year && d.country === country;
@@ -240,17 +283,20 @@ function drawHorizontalBarChartPer1000(containerId) {
                     };
                 });
             } else {
+                // Show all countries with data for the selected year
                 filtered = data.filter(function (d) {
                     return d.year === year;
                 });
             }
 
+            // Sort highest density first
             filtered.sort(function (a, b) { return b.value - a.value; });
 
             chartArea.html("");
             drawChart(filtered, year);
         }
     }).catch(function (error) {
+        // Show a helpful message if the CSV cannot be loaded
         container.append("p").text(
             "Could not load the dataset. Open this page with Live Server (or python -m http.server) instead of double-clicking the HTML file. " +
             error.message
